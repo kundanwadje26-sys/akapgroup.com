@@ -471,9 +471,9 @@ body {
 .toast.show { transform: translateY(0); opacity: 1; }
 .toast-gold { background: var(--gold-dark); color: var(--white); }
 .site-logo{
-    height:80px;
+    height:96px;
     width:auto;
-    max-width:220px;
+    max-width:264px;
     display:block;
     object-fit:contain;
     object-position:left center;
@@ -488,8 +488,8 @@ body {
 
 @media (max-width:768px){
     .site-logo{
-        height:56px;
-        max-width:160px;
+        height:67px;
+        max-width:192px;
     }
 }
 .footer-logo-img{
