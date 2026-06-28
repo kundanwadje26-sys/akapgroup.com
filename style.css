@@ -99,10 +99,14 @@ body {
   transition: box-shadow var(--transition);
 }
 .navbar.scrolled { box-shadow: var(--shadow-md); }
-.nav-container {
-  max-width: 1200px; margin: 0 auto; padding: 0 2rem;
-  display: flex; align-items: center; justify-content: space-between;
-  height: 80px;
+.nav-container{
+    max-width:1400px;      /* gives more room */
+    margin:0 auto;
+    padding:0 20px;        /* reduced side padding */
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    height:90px;
 }
 .nav-logo { display: flex; align-items: center; gap: 4px; text-decoration: none; }
 .logo-mark { font-family: var(--font-display); font-size: 1.6rem; font-weight: 700; line-height: 1; }
@@ -467,7 +471,7 @@ body {
 .toast.show { transform: translateY(0); opacity: 1; }
 .toast-gold { background: var(--gold-dark); color: var(--white); }
 .site-logo{
-    height:48px;
+    height:78px;
     width:auto;
     display:block;
 }
@@ -475,11 +479,12 @@ body {
 .nav-logo{
     display:flex;
     align-items:center;
+    margin-left:-18px;
 }
 
 @media (max-width:768px){
     .site-logo{
-        height:40px;
+        height:54px;
     }
 }
 .footer-logo-img{
