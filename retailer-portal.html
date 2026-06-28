@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Retailer Portal | AKap Group</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+  body { padding-top: 70px; }
+  .portal-layout { display: grid; grid-template-columns: 260px 1fr; min-height: calc(100vh - 70px); }
+  .portal-sidebar { background: var(--navy); position: sticky; top: 70px; height: calc(100vh - 70px); overflow-y: auto; }
+  .portal-tab { display: none; }
+  .portal-tab.active { display: block; }
+  .tab-btn { background: none; border: none; cursor: pointer; font-family: var(--font-body); width: 100%; text-align: left; }
+  @media(max-width:768px){
+    .portal-layout{grid-template-columns:1fr;}
+    .portal-sidebar{display:none;}
+    .portal-mobile-nav{display:flex!important;}
+  }
+  .portal-mobile-nav{display:none;gap:8px;overflow-x:auto;padding:16px;background:var(--navy);}
+  .portal-mobile-nav button{background:rgba(255,255,255,0.1);color:rgba(225,232,233,0.8);border:1px solid rgba(255,255,255,0.15);border-radius:var(--radius-sm);padding:8px 16px;font-size:0.8rem;white-space:nowrap;cursor:pointer;font-family:var(--font-body);}
+  .portal-mobile-nav button.active{background:rgba(255,255,255,0.2);color:var(--white);}
+</style>
+</head>
+<body>
+
+<nav class="navbar" id="navbar" style="position:fixed;">
+  <div class="nav-container">
+    <a href="index.html" class="nav-logo">
+      <div class="logo-mark"><span class="logo-ak">AK</span><span class="logo-ap">ap</span></div>
+      <span class="logo-group">Group</span>
+    </a>
+    <button class="hamburger" id="hamburger" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="businesses.html">Businesses</a></li>
+      <li><a href="directors.html">Leadership</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="retailer-portal.html" class="nav-portal-btn active">Retailer Portal</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- Mobile Tab Nav -->
+<div class="portal-mobile-nav" id="mobileNav">
+  <button class="active" onclick="switchTab('dashboard',this)">Dashboard</button>
+  <button onclick="switchTab('register',this)">Register Partner</button>
+  <button onclick="switchTab('data',this)">Partner Data</button>
+  <button onclick="switchTab('generate',this)">Generate Code</button>
+  <button onclick="switchTab('search',this)">Search</button>
+</div>
+
+<div class="portal-layout">
+  <!-- Sidebar -->
+  <aside class="portal-sidebar">
+    <div class="portal-sidebar-logo">
+      <span>AKap Partner Portal</span>
+      <small>Distribution Network Management</small>
+    </div>
+    <div class="portal-nav-section">
+      <div class="portal-nav-label">Overview</div>
+      <div class="portal-nav-item tab-btn active" id="nav-dashboard" onclick="switchTab('dashboard', this, true)">
+        <span class="portal-nav-icon">◈</span> Dashboard
+      </div>
+    </div>
+    <div class="portal-nav-section">
+      <div class="portal-nav-label">Partners</div>
+      <div class="portal-nav-item tab-btn" id="nav-register" onclick="switchTab('register', this, true)">
+        <span class="portal-nav-icon">+</span> Register Partner
+      </div>
+      <div class="portal-nav-item tab-btn" id="nav-data" onclick="switchTab('data', this, true)">
+        <span class="portal-nav-icon">≡</span> Partner Data
+      </div>
+      <div class="portal-nav-item tab-btn" id="nav-search" onclick="switchTab('search', this, true)">
+        <span class="portal-nav-icon">◎</span> Search Partners
+      </div>
+    </div>
+    <div class="portal-nav-section">
+      <div class="portal-nav-label">Tools</div>
+      <div class="portal-nav-item tab-btn" id="nav-generate" onclick="switchTab('generate', this, true)">
+        <span class="portal-nav-icon">#</span> Code Generator
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="portal-main">
+
+    <!-- DASHBOARD TAB -->
+    <div class="portal-tab active" id="tab-dashboard">
+      <div class="portal-topbar">
+        <h2>Dashboard</h2>
+        <div class="portal-user-badge">
+          <div class="portal-user-avatar">AK</div>
+          <span>AKap Admin</span>
+        </div>
+      </div>
+
+      <div class="portal-stats-grid" id="statsGrid">
+        <div class="portal-stat-card">
+          <div class="psc-label">Total Partners</div>
+          <div class="psc-value" id="statTotal">0</div>
+          <div class="psc-sub">Across all categories</div>
+        </div>
+        <div class="portal-stat-card">
+          <div class="psc-label">Retailers</div>
+          <div class="psc-value" id="statR" style="color:var(--navy)">0</div>
+          <div class="psc-sub">Active retailer partners</div>
+        </div>
+        <div class="portal-stat-card">
+          <div class="psc-label">Dealers</div>
+          <div class="psc-value" id="statD" style="color:var(--gold-dark)">0</div>
+          <div class="psc-sub">Active dealer partners</div>
+        </div>
+        <div class="portal-stat-card">
+          <div class="psc-label">Builders + Plumbers</div>
+          <div class="psc-value" id="statBP">0</div>
+          <div class="psc-sub">Combined B & P</div>
+        </div>
+      </div>
+
+      <div class="portal-panel">
+        <div class="portal-panel-header">
+          <h3>Recent Partners</h3>
+          <button class="btn-primary" style="padding:8px 18px;font-size:0.8rem;" onclick="switchTab('register',null,true)">+ Add Partner</button>
+        </div>
+        <div class="portal-panel-body" style="padding:0;">
+          <table class="data-table" id="recentTable">
+            <thead>
+              <tr>
+                <th>Partner Code</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>State</th>
+                <th>Zone</th>
+                <th>Registered</th>
+              </tr>
+            </thead>
+            <tbody id="recentTbody">
+              <tr><td colspan="6" style="text-align:center;color:var(--text-light);padding:24px;">No partners registered yet. <a href="#" onclick="switchTab('register',null,true)" style="color:var(--navy);">Register your first partner →</a></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="portal-panel">
+        <div class="portal-panel-header">
+          <h3>Partner Coding Nomenclature</h3>
+        </div>
+        <div class="portal-panel-body">
+          <div class="nomenclature-box">
+            <span class="nomen-code">R — MH — 20 — U — 26 — XXXX</span>
+            <div class="nomen-breakdown">
+              <div class="nomen-segment"><div class="nomen-seg-value">R/D/B/P</div><div class="nomen-seg-label">Type</div></div>
+              <div class="nomen-segment"><div class="nomen-seg-value">MH</div><div class="nomen-seg-label">State</div></div>
+              <div class="nomen-segment"><div class="nomen-seg-value">20</div><div class="nomen-seg-label">City RTO</div></div>
+              <div class="nomen-segment"><div class="nomen-seg-value">U/R</div><div class="nomen-seg-label">Zone</div></div>
+              <div class="nomen-segment"><div class="nomen-seg-value">26</div><div class="nomen-seg-label">Year</div></div>
+              <div class="nomen-segment"><div class="nomen-seg-value">XXXX</div><div class="nomen-seg-label">Unique ID</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- REGISTER TAB -->
+    <div class="portal-tab" id="tab-register">
+      <div class="portal-topbar">
+        <h2>Register New Partner</h2>
+      </div>
+
+      <div class="portal-panel">
+        <div class="portal-panel-header">
+          <h3>Partner Details</h3>
+          <span style="font-size:0.8rem;color:var(--text-light);">All fields required</span>
+        </div>
+        <div class="portal-panel-body">
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Partner Type</label>
+              <select class="form-select" id="pType" onchange="updateCode()">
+                <option value="">Select type</option>
+                <option value="R">R — Retailer</option>
+                <option value="D">D — Dealer</option>
+                <option value="B">B — Builder</option>
+                <option value="P">P — Plumber</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Full Name / Business Name</label>
+              <input class="form-input" type="text" id="pName" placeholder="e.g. Sharma Hardware Store">
+            </div>
+          </div>
+          <div class="form-grid-3">
+            <div class="form-group">
+              <label class="form-label">State Code</label>
+              <select class="form-select" id="pState" onchange="updateCode()">
+                <option value="">State</option>
+                <option value="MH">MH — Maharashtra</option>
+                <option value="DL">DL — Delhi</option>
+                <option value="GJ">GJ — Gujarat</option>
+                <option value="RJ">RJ — Rajasthan</option>
+                <option value="UP">UP — Uttar Pradesh</option>
+                <option value="MP">MP — Madhya Pradesh</option>
+                <option value="KA">KA — Karnataka</option>
+                <option value="TN">TN — Tamil Nadu</option>
+                <option value="WB">WB — West Bengal</option>
+                <option value="PB">PB — Punjab</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">City RTO Code</label>
+              <input class="form-input" type="text" id="pRTO" maxlength="3" placeholder="e.g. 20" onchange="updateCode()" oninput="updateCode()">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Zone</label>
+              <select class="form-select" id="pZone" onchange="updateCode()">
+                <option value="">Zone</option>
+                <option value="U">U — Urban</option>
+                <option value="R">R — Rural</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">City</label>
+              <input class="form-input" type="text" id="pCity" placeholder="City name">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Contact Number</label>
+              <input class="form-input" type="tel" id="pPhone" placeholder="+91 XXXXX XXXXX">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Address</label>
+            <input class="form-input" type="text" id="pAddress" placeholder="Full address">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Notes (optional)</label>
+            <input class="form-input" type="text" id="pNotes" placeholder="Any additional information">
+          </div>
+
+          <div style="background: var(--off-white); border: 1px solid var(--silver); border-radius: var(--radius-sm); padding: 20px; margin: 24px 0;">
+            <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-light);margin-bottom:8px;">Generated Partner Code</div>
+            <div class="code-display" id="generatedCode">— — — — — — ——</div>
+          </div>
+
+          <button class="btn-gold" onclick="registerPartner()" style="padding:14px 40px;font-size:0.95rem;">Register Partner</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- DATA TAB -->
+    <div class="portal-tab" id="tab-data">
+      <div class="portal-topbar">
+        <h2>Partner Data</h2>
+        <div style="display:flex;gap:10px;">
+          <button class="btn-secondary" style="padding:8px 18px;font-size:0.8rem;" onclick="exportCSV()">Export CSV</button>
+        </div>
+      </div>
+
+      <div class="portal-panel">
+        <div class="portal-panel-header">
+          <h3>All Partners</h3>
+          <div style="display:flex;gap:8px;">
+            <select class="form-select" id="filterType" onchange="renderTable()" style="width:auto;padding:6px 12px;font-size:0.8rem;">
+              <option value="">All Types</option>
+              <option value="R">Retailers</option>
+              <option value="D">Dealers</option>
+              <option value="B">Builders</option>
+              <option value="P">Plumbers</option>
+            </select>
+            <select class="form-select" id="filterZone" onchange="renderTable()" style="width:auto;padding:6px 12px;font-size:0.8rem;">
+              <option value="">All Zones</option>
+              <option value="U">Urban</option>
+              <option value="R">Rural</option>
+            </select>
+          </div>
+        </div>
+        <div class="portal-panel-body" style="padding:0;overflow-x:auto;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Code</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>State</th>
+                <th>City</th>
+                <th>Zone</th>
+                <th>Contact</th>
+                <th>Registered</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="allPartnersTbody">
+              <tr><td colspan="9" style="text-align:center;color:var(--text-light);padding:24px;">No partner data yet.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEARCH TAB -->
+    <div class="portal-tab" id="tab-search">
+      <div class="portal-topbar"><h2>Search Partners</h2></div>
+      <div class="portal-panel">
+        <div class="portal-panel-body">
+          <div style="display:flex;gap:12px;margin-bottom:24px;">
+            <input class="form-input" type="text" id="searchInput" placeholder="Search by name, code, city, or contact..." style="flex:1;" oninput="searchPartners()">
+          </div>
+          <table class="data-table">
+            <thead>
+              <tr><th>Code</th><th>Name</th><th>Type</th><th>State</th><th>City</th><th>Zone</th><th>Contact</th></tr>
+            </thead>
+            <tbody id="searchTbody">
+              <tr><td colspan="7" style="text-align:center;color:var(--text-light);padding:24px;">Enter a search term above to find partners.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- CODE GENERATOR TAB -->
+    <div class="portal-tab" id="tab-generate">
+      <div class="portal-topbar"><h2>Partner Code Generator</h2></div>
+      <div class="portal-panel">
+        <div class="portal-panel-body">
+          <p style="color:var(--text-mid);margin-bottom:24px;">Use this tool to generate a preview partner code based on classification criteria, before formally registering a partner.</p>
+          <div class="form-grid-3">
+            <div class="form-group">
+              <label class="form-label">Partner Type</label>
+              <select class="form-select" id="gType" onchange="generatePreview()">
+                <option value="R">R — Retailer</option>
+                <option value="D">D — Dealer</option>
+                <option value="B">B — Builder</option>
+                <option value="P">P — Plumber</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">State</label>
+              <select class="form-select" id="gState" onchange="generatePreview()">
+                <option value="MH">MH</option>
+                <option value="DL">DL</option>
+                <option value="GJ">GJ</option>
+                <option value="RJ">RJ</option>
+                <option value="UP">UP</option>
+                <option value="MP">MP</option>
+                <option value="KA">KA</option>
+                <option value="TN">TN</option>
+                <option value="WB">WB</option>
+                <option value="PB">PB</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">City RTO Code</label>
+              <input class="form-input" type="text" id="gRTO" value="20" maxlength="3" oninput="generatePreview()">
+            </div>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Zone</label>
+              <select class="form-select" id="gZone" onchange="generatePreview()">
+                <option value="U">U — Urban</option>
+                <option value="R">R — Rural</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Year</label>
+              <input class="form-input" type="text" id="gYear" value="26" maxlength="2" oninput="generatePreview()">
+            </div>
+          </div>
+          <div style="background:var(--navy);border-radius:var(--radius-md);padding:32px;text-align:center;margin-top:8px;">
+            <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.15em;color:rgba(225,232,233,0.5);margin-bottom:12px;">Preview Code</div>
+            <div class="code-display" id="previewCode" style="font-size:1.8rem;">R — MH — 20 — U — 26 — XXXX</div>
+            <p style="color:rgba(225,232,233,0.5);font-size:0.8rem;margin-top:14px;">Unique ID (XXXX) is automatically assigned on registration</p>
+          </div>
+          <div style="margin-top:24px;">
+            <h4 style="color:var(--navy);margin-bottom:16px;font-family:var(--font-display);">Code Segments Explained</h4>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+              <div style="border:1px solid var(--silver);border-radius:var(--radius-sm);padding:14px;">
+                <div style="font-weight:700;color:var(--navy);font-size:0.9rem;margin-bottom:4px;">Partner Type (R/D/B/P)</div>
+                <div style="font-size:0.8rem;color:var(--text-mid);">Identifies whether the partner is a Retailer, Dealer, Builder, or Plumber in the distribution chain.</div>
+              </div>
+              <div style="border:1px solid var(--silver);border-radius:var(--radius-sm);padding:14px;">
+                <div style="font-weight:700;color:var(--navy);font-size:0.9rem;margin-bottom:4px;">State Code (2 letters)</div>
+                <div style="font-size:0.8rem;color:var(--text-mid);">Standard Indian state abbreviation code (e.g. MH for Maharashtra, DL for Delhi).</div>
+              </div>
+              <div style="border:1px solid var(--silver);border-radius:var(--radius-sm);padding:14px;">
+                <div style="font-weight:700;color:var(--navy);font-size:0.9rem;margin-bottom:4px;">City RTO Code</div>
+                <div style="font-size:0.8rem;color:var(--text-mid);">The RTO district code of the city where the partner operates.</div>
+              </div>
+              <div style="border:1px solid var(--silver);border-radius:var(--radius-sm);padding:14px;">
+                <div style="font-weight:700;color:var(--navy);font-size:0.9rem;margin-bottom:4px;">Zone (U/R)</div>
+                <div style="font-size:0.8rem;color:var(--text-mid);">Urban (U) or Rural (R) — classifies the market type where the partner is located.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="main.js"></script>
+<script>
+// ── STORAGE KEY
+const STORAGE_KEY = 'akap_partners';
+let partners = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+
+// ── SAVE
+function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(partners)); }
+
+// ── TAB SWITCHING
+function switchTab(tab, el, isSidebar) {
+  document.querySelectorAll('.portal-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  // sidebar
+  document.querySelectorAll('.portal-nav-item.tab-btn').forEach(b => b.classList.remove('active'));
+  const sideEl = document.getElementById('nav-' + tab);
+  if (sideEl) sideEl.classList.add('active');
+  // mobile
+  document.querySelectorAll('.portal-mobile-nav button').forEach(b => b.classList.remove('active'));
+  if (el && !isSidebar) el.classList.add('active');
+  updateDashboard();
+  renderTable();
+}
+
+// ── CODE GENERATION
+let codeCounter = partners.length;
+
+function pad(n, l) { return String(n).padStart(l, '0'); }
+
+function generateCode(type, state, rto, zone) {
+  codeCounter++;
+  const yr = new Date().getFullYear().toString().slice(-2);
+  return `${type}${state}${rto}${zone}${yr}${pad(codeCounter, 4)}`;
+}
+
+function updateCode() {
+  const t = document.getElementById('pType').value;
+  const s = document.getElementById('pState').value;
+  const r = document.getElementById('pRTO').value || 'XX';
+  const z = document.getElementById('pZone').value;
+  const yr = new Date().getFullYear().toString().slice(-2);
+  if (t && s && z) {
+    document.getElementById('generatedCode').textContent = `${t} — ${s} — ${r} — ${z} — ${yr} — XXXX`;
+  }
+}
+
+function generatePreview() {
+  const t = document.getElementById('gType').value;
+  const s = document.getElementById('gState').value;
+  const r = document.getElementById('gRTO').value || 'XX';
+  const z = document.getElementById('gZone').value;
+  const yr = document.getElementById('gYear').value || '26';
+  document.getElementById('previewCode').textContent = `${t} — ${s} — ${r} — ${z} — ${yr} — XXXX`;
+}
+
+// ── REGISTER PARTNER
+function registerPartner() {
+  const type  = document.getElementById('pType').value;
+  const name  = document.getElementById('pName').value.trim();
+  const state = document.getElementById('pState').value;
+  const rto   = document.getElementById('pRTO').value.trim();
+  const zone  = document.getElementById('pZone').value;
+  const city  = document.getElementById('pCity').value.trim();
+  const phone = document.getElementById('pPhone').value.trim();
+  const addr  = document.getElementById('pAddress').value.trim();
+  const notes = document.getElementById('pNotes').value.trim();
+
+  if (!type || !name || !state || !rto || !zone || !city || !phone) {
+    showToast('Please fill all required fields.', true);
+    return;
+  }
+
+  const code = generateCode(type, state, rto, zone);
+  const date = new Date().toLocaleDateString('en-IN');
+
+  partners.push({ code, name, type, state, rto, zone, city, phone, addr, notes, date });
+  save();
+  showToast(`Partner registered: ${code}`, false);
+  clearForm();
+  updateDashboard();
+  renderTable();
+  switchTab('data', null, true);
+}
+
+function clearForm() {
+  ['pType','pName','pState','pRTO','pZone','pCity','pPhone','pAddress','pNotes'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.getElementById('generatedCode').textContent = '— — — — — — ——';
+}
+
+// ── DASHBOARD STATS
+function updateDashboard() {
+  document.getElementById('statTotal').textContent = partners.length;
+  document.getElementById('statR').textContent = partners.filter(p => p.type === 'R').length;
+  document.getElementById('statD').textContent = partners.filter(p => p.type === 'D').length;
+  const bp = partners.filter(p => p.type === 'B' || p.type === 'P').length;
+  document.getElementById('statBP').textContent = bp;
+  // recent 5
+  const tbody = document.getElementById('recentTbody');
+  const recent = [...partners].reverse().slice(0, 5);
+  if (recent.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--text-light);padding:24px;">No partners registered yet. <a href="#" onclick="switchTab('register',null,true)" style="color:var(--navy);">Register your first partner →</a></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = recent.map(p => `
+    <tr>
+      <td><code style="font-size:0.8rem;background:var(--off-white);padding:3px 8px;border-radius:4px;">${p.code}</code></td>
+      <td>${p.name}</td>
+      <td>${typeBadge(p.type)}</td>
+      <td>${p.state}</td>
+      <td>${zoneBadge(p.zone)}</td>
+      <td style="color:var(--text-light);font-size:0.8rem;">${p.date}</td>
+    </tr>
+  `).join('');
+}
+
+// ── RENDER TABLE
+function renderTable() {
+  const fType = document.getElementById('filterType')?.value || '';
+  const fZone = document.getElementById('filterZone')?.value || '';
+  let data = partners.filter(p =>
+    (!fType || p.type === fType) &&
+    (!fZone || p.zone === fZone)
+  );
+  const tbody = document.getElementById('allPartnersTbody');
+  if (!tbody) return;
+  if (data.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;color:var(--text-light);padding:24px;">No partners match the current filters.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = data.map((p, i) => `
+    <tr>
+      <td><code style="font-size:0.8rem;background:var(--off-white);padding:3px 8px;border-radius:4px;">${p.code}</code></td>
+      <td>${p.name}</td>
+      <td>${typeBadge(p.type)}</td>
+      <td>${p.state}</td>
+      <td>${p.city}</td>
+      <td>${zoneBadge(p.zone)}</td>
+      <td style="font-size:0.85rem;">${p.phone}</td>
+      <td style="color:var(--text-light);font-size:0.8rem;">${p.date}</td>
+      <td><button onclick="deletePartner(${partners.indexOf(p)})" style="background:none;border:none;color:var(--text-light);cursor:pointer;font-size:0.8rem;">✕</button></td>
+    </tr>
+  `).join('');
+}
+
+// ── SEARCH
+function searchPartners() {
+  const q = document.getElementById('searchInput').value.toLowerCase().trim();
+  const tbody = document.getElementById('searchTbody');
+  if (!q) { tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--text-light);padding:24px;">Enter a search term above.</td></tr>`; return; }
+  const results = partners.filter(p =>
+    p.name.toLowerCase().includes(q) ||
+    p.code.toLowerCase().includes(q) ||
+    p.city.toLowerCase().includes(q) ||
+    p.phone.includes(q)
+  );
+  if (results.length === 0) { tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--text-light);padding:24px;">No partners found for "${q}".</td></tr>`; return; }
+  tbody.innerHTML = results.map(p => `
+    <tr>
+      <td><code style="font-size:0.8rem;background:var(--off-white);padding:3px 8px;border-radius:4px;">${p.code}</code></td>
+      <td>${p.name}</td>
+      <td>${typeBadge(p.type)}</td>
+      <td>${p.state}</td>
+      <td>${p.city}</td>
+      <td>${zoneBadge(p.zone)}</td>
+      <td style="font-size:0.85rem;">${p.phone}</td>
+    </tr>
+  `).join('');
+}
+
+// ── DELETE
+function deletePartner(idx) {
+  if (!confirm('Delete this partner record?')) return;
+  partners.splice(idx, 1);
+  save();
+  renderTable();
+  updateDashboard();
+  showToast('Partner deleted.');
+}
+
+// ── EXPORT CSV
+function exportCSV() {
+  if (partners.length === 0) { showToast('No data to export.', true); return; }
+  const headers = ['Code','Name','Type','State','RTO','Zone','City','Phone','Address','Notes','Date'];
+  const rows = partners.map(p => [p.code, p.name, p.type, p.state, p.rto, p.zone, p.city, p.phone, p.addr, p.notes, p.date].map(v => `"${v}"`).join(','));
+  const csv = [headers.join(','), ...rows].join('\n');
+  const blob = new Blob([csv], {type:'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'akap_partners.csv'; a.click();
+  showToast('CSV exported.');
+}
+
+// ── BADGES
+const typeLabels = { R:'Retailer', D:'Dealer', B:'Builder', P:'Plumber' };
+function typeBadge(t) { return `<span class="badge badge-${t.toLowerCase()}">${typeLabels[t]||t}</span>`; }
+function zoneBadge(z) { return `<span class="badge ${z==='U'?'badge-urban':'badge-rural'}">${z==='U'?'Urban':'Rural'}</span>`; }
+
+// ── TOAST
+function showToast(msg, isError = false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast' + (isError ? ' toast-gold' : '');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ── INIT
+updateDashboard();
+renderTable();
+generatePreview();
+</script>
+</body>
+</html>
