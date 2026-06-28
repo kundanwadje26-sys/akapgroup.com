@@ -466,3 +466,19 @@ body {
 }
 .toast.show { transform: translateY(0); opacity: 1; }
 .toast-gold { background: var(--gold-dark); color: var(--white); }
+.site-logo{
+    height:48px;
+    width:auto;
+    display:block;
+}
+
+.nav-logo{
+    display:flex;
+    align-items:center;
+}
+
+@media (max-width:768px){
+    .site-logo{
+        height:40px;
+    }
+}
