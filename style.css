@@ -490,3 +490,11 @@ body {
     width:160px;
     margin-bottom:15px;
 }
+.director-photo{
+    width:90px;
+    height:90px;
+    border-radius:50%;
+    object-fit:cover;
+    border:4px solid rgba(255,255,255,.25);
+    flex-shrink:0;
+}
