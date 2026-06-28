@@ -471,21 +471,25 @@ body {
 .toast.show { transform: translateY(0); opacity: 1; }
 .toast-gold { background: var(--gold-dark); color: var(--white); }
 .site-logo{
-    height:90px;
+    height:80px;
     width:auto;
-    max-width:none;
+    max-width:220px;
     display:block;
+    object-fit:contain;
+    object-position:left center;
 }
 
 .nav-logo{
     display:flex;
     align-items:center;
-    margin-left:-35px;
+    margin-left:0;
+    flex-shrink:0;
 }
 
 @media (max-width:768px){
     .site-logo{
-        height:54px;
+        height:56px;
+        max-width:160px;
     }
 }
 .footer-logo-img{
